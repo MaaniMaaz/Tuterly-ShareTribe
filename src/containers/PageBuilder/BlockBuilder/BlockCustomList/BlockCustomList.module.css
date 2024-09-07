@@ -1,0 +1,25 @@
+.block {
+  padding: 20px;
+}
+
+.customList {
+  list-style: none;
+  padding-left: 0;
+}
+
+.customListItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.customBullet {
+  margin-right: 12px;
+  width: 16px; /* Adjust the size as needed */
+  height: 16px;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}

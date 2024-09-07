@@ -6,6 +6,7 @@
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   padding-inline-start: 40px;
+  list-style-type: none;
 
   & .ul {
     list-style-type: circle;
@@ -35,8 +36,17 @@
 }
 
 .li {
+
 }
 
 .li > p {
   margin: 0;
+
+}
+
+.li img {
+
+
+  vertical-align:middle; /* Align the image vertically in the middle of the text */
+
 }

@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import loadable from '@loadable/component';
 
-// Import SectionBuilder and SectionCustom components
 import SectionBuilder from '../PageBuilder/SectionBuilder/SectionBuilder';
-import SectionCustom from '../PageBuilder/SectionBuilder/SectionCustom';
 import FallbackPage from './FallbackPage';
 import { camelize } from '../../util/string';
 import { ASSET_NAME } from './LandingPage.duck';
+
 
 const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
@@ -31,8 +30,6 @@ export const LandingPageComponent = (props) => {
       {/* Render all sections from the CMS */}
       <SectionBuilder sections={pageData?.sections} options={props.options} />
 
-      {/* Render the custom section after the CMS content */}
-      <SectionCustom />
     </PageBuilder>
   );
 };

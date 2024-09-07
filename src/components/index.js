@@ -35,6 +35,7 @@ export { default as IconSocialMediaTwitter } from './IconSocialMediaTwitter/Icon
 export { default as IconSpinner } from './IconSpinner/IconSpinner';
 export { default as IconSuccess } from './IconSuccess/IconSuccess';
 
+
 // Typography
 export { Heading, H1, H2, H3, H4, H5, H6  } from './Heading/Heading';
 
@@ -57,6 +58,7 @@ export { default as ResponsiveBackgroundImageContainer } from './ResponsiveBackg
 export { default as TimeRange } from './TimeRange/TimeRange';
 export { default as UserDisplayName } from './UserDisplayName/UserDisplayName';
 export { default as ValidationError } from './ValidationError/ValidationError';
+export { default as HelloWorldSection } from './HelloWorldSection/HelloWorldSection'
 
 /**
  * Composite components

@@ -1,20 +1,17 @@
 import React from 'react';
-import { arrayOf, bool, func, node, object, shape, string } from 'prop-types';
+import { arrayOf, bool, node, object, shape, string } from 'prop-types';
 import classNames from 'classnames';
 
 import Field, { hasDataInFields } from '../../Field';
 import BlockBuilder from '../../BlockBuilder';
-
 import SectionContainer from '../SectionContainer';
 
 import css from './SectionFeatures.module.css';
 
-// Section component that shows features.
-// Block content are shown in a row-like way:
-// [image] text
-// text [image]
-// [image] text
-const SectionFeatures = props => {
+// SVG or image URL to be used as the icon
+const iconUrl = ''; // Change this to your image or SVG path
+
+const SectionFeatures = (props) => {
   const {
     sectionId,
     className,
@@ -29,8 +26,6 @@ const SectionFeatures = props => {
     options,
   } = props;
 
-  // If external mapping has been included for fields
-  // E.g. { h1: { component: MyAwesomeHeader } }
   const fieldComponents = options?.fieldComponents;
   const fieldOptions = { fieldComponents };
 
@@ -61,7 +56,14 @@ const SectionFeatures = props => {
           <BlockBuilder
             rootClassName={css.block}
             ctaButtonClass={defaultClasses.ctaButton}
-            blocks={blocks}
+            blocks={blocks.map(block => ({
+              ...block,
+              // Modify block content to include an image before each list item
+              text: {
+                ...block.text,
+                content: block.text.content.replace(/<li>/g, `<li><img src="${iconUrl}" alt="icon" style="width: 16px; margin-right: 8px;" />`)
+              },
+            }))}
             sectionId={sectionId}
             responsiveImageSizes="(max-width: 767px) 100vw, 568px"
             options={options}
@@ -70,43 +72,6 @@ const SectionFeatures = props => {
       ) : null}
     </SectionContainer>
   );
-};
-
-const propTypeOption = shape({
-  fieldComponents: shape({ component: node, pickValidProps: func }),
-});
-
-SectionFeatures.defaultProps = {
-  className: null,
-  rootClassName: null,
-  defaultClasses: null,
-  textClassName: null,
-  title: null,
-  description: null,
-  appearance: null,
-  callToAction: null,
-  blocks: [],
-  isInsideContainer: false,
-  options: null,
-};
-
-SectionFeatures.propTypes = {
-  sectionId: string.isRequired,
-  className: string,
-  rootClassName: string,
-  defaultClasses: shape({
-    sectionDetails: string,
-    title: string,
-    description: string,
-    ctaButton: string,
-  }),
-  title: object,
-  description: object,
-  appearance: object,
-  callToAction: object,
-  blocks: arrayOf(object),
-  isInsideContainer: bool,
-  options: propTypeOption,
 };
 
 export default SectionFeatures;

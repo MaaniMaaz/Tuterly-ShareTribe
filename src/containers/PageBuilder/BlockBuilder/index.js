@@ -7,6 +7,7 @@ import BlockDefault from './BlockDefault';
 // Main component: BlockBuilder
 import BlockBuilder from './BlockBuilder';
 
-export { BlockContainer, BlockDefault };
+import BlockCustomList from './BlockCustomList';
+export { BlockContainer, BlockDefault, BlockCustomList };
 
 export default BlockBuilder;
