@@ -8,7 +8,7 @@ import { LINE_ITEM_ITEM } from '../../util/types';
 import { getProcess } from '../../transactions/transaction';
 
 import { getStateData } from './InboxPage.stateData';
-import { InboxItem } from './InboxPage';
+
 
 const noop = () => null;
 const { Money } = sdkTypes;

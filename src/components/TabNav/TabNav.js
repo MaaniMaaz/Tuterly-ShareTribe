@@ -6,7 +6,15 @@ import { NamedLink } from '../../components';
 import css from './TabNav.module.css';
 
 const Tab = props => {
-  const { className, id, disabled, text, selected, linkProps } = props;
+  const { className, id, disabled, text, selected, linkProps, userType } = props;
+
+  // Conditionally render the tab if:
+  // - the tab has id="1" AND userType is "Student"
+  // - OR the tab has id="StripePayoutPageTab" AND userType is "Student"
+  if ((id === '1' && userType === 'Student') || (id === 'StripePayoutPageTab' && userType === 'Student')) {
+    return null;
+  }
+
   const linkClasses = classNames(css.link, {
     [css.selectedLink]: selected,
     [css.disabled]: disabled,
@@ -32,17 +40,18 @@ Tab.propTypes = {
   disabled: bool,
   selected: bool,
   linkProps: object.isRequired,
+  userType: string.isRequired, // Add userType as a required prop
 };
 
 const TabNav = props => {
-  const { className, rootClassName, tabRootClassName, tabs } = props;
+  const { className, rootClassName, tabRootClassName, tabs, userType } = props;
   const classes = classNames(rootClassName || css.root, className);
   const tabClasses = tabRootClassName || css.tab;
   return (
     <nav className={classes}>
       {tabs.map((tab, index) => {
         const id = typeof tab.id === 'string' ? tab.id : `${index}`;
-        return <Tab key={id} id={id} className={tabClasses} {...tab} />;
+        return <Tab key={id} id={id} className={tabClasses} {...tab} userType={userType} />;
       })}
     </nav>
   );
@@ -60,6 +69,7 @@ TabNav.propTypes = {
   rootClassName: string,
   tabRootClassName: string,
   tabs: arrayOf(object).isRequired,
+  userType: string.isRequired, // Add userType as a required prop
 };
 
 export default TabNav;

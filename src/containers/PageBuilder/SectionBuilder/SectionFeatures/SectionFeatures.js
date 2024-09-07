@@ -1,15 +1,12 @@
 import React from 'react';
-import { arrayOf, bool, node, object, shape, string } from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import classNames from 'classnames';
-
-import Field, { hasDataInFields } from '../../Field';
 import BlockBuilder from '../../BlockBuilder';
 import SectionContainer from '../SectionContainer';
-
+import Field, { hasDataInFields } from '../../Field';
 import css from './SectionFeatures.module.css';
 
-// SVG or image URL to be used as the icon
-const iconUrl = ''; // Change this to your image or SVG path
+const iconUrl = ''; // You can set your icon URL here
 
 const SectionFeatures = (props) => {
   const {
@@ -26,11 +23,15 @@ const SectionFeatures = (props) => {
     options,
   } = props;
 
+  const history = useHistory(); // For navigation
+
   const fieldComponents = options?.fieldComponents;
   const fieldOptions = { fieldComponents };
 
   const hasHeaderFields = hasDataInFields([title, description, callToAction], fieldOptions);
   const hasBlocks = blocks?.length > 0;
+
+
 
   return (
     <SectionContainer
@@ -44,9 +45,9 @@ const SectionFeatures = (props) => {
         <header className={defaultClasses.sectionDetails}>
           <Field data={title} className={defaultClasses.title} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
-          <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>
       ) : null}
+
       {hasBlocks ? (
         <div
           className={classNames(defaultClasses.blockContainer, css.featuresMain, {
@@ -58,11 +59,22 @@ const SectionFeatures = (props) => {
             ctaButtonClass={defaultClasses.ctaButton}
             blocks={blocks.map(block => ({
               ...block,
-              // Modify block content to include an image before each list item
               text: {
                 ...block.text,
-                content: block.text.content.replace(/<li>/g, `<li><img src="${iconUrl}" alt="icon" style="width: 16px; margin-right: 8px;" />`)
+                content: block.text.content.replace(
+                  /<li>/g,
+                  `<li><img src="${iconUrl}" alt="icon" style="width: 16px; margin-right: 8px;" />`
+                ),
               },
+              ctaButton: block.ctaButton
+                ? {
+                    ...block.ctaButton,
+                    onClick: () => {
+
+                      handleCTAClick(block.ctaButton.text); // Apply click handler
+                    },
+                  }
+                : null,
             }))}
             sectionId={sectionId}
             responsiveImageSizes="(max-width: 767px) 100vw, 568px"

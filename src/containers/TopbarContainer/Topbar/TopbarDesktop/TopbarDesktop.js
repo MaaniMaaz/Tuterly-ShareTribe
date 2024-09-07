@@ -21,25 +21,21 @@ import CustomLinksMenu from './CustomLinksMenu/CustomLinksMenu';
 
 import css from './TopbarDesktop.module.css';
 
-const SignupLink = () => {
-  return (
-    <NamedLink name="SignupPage" className={css.topbarLink}>
-      <span className={css.topbarLinkLabel}>
-        <FormattedMessage id="TopbarDesktop.signup" />
-      </span>
-    </NamedLink>
-  );
-};
+const SignupLink = () => (
+  <NamedLink name="SignupPage" className={css.topbarLink}>
+    <span className={css.topbarLinkLabel}>
+      <FormattedMessage id="TopbarDesktop.signup" />
+    </span>
+  </NamedLink>
+);
 
-const LoginLink = () => {
-  return (
-    <NamedLink name="LoginPage" className={css.topbarLink}>
-      <span className={css.topbarLinkLabel}>
-        <FormattedMessage id="TopbarDesktop.login" />
-      </span>
-    </NamedLink>
-  );
-};
+const LoginLink = () => (
+  <NamedLink name="LoginPage" className={css.topbarLink}>
+    <span className={css.topbarLinkLabel}>
+      <FormattedMessage id="TopbarDesktop.login" />
+    </span>
+  </NamedLink>
+);
 
 const InboxLink = ({ notificationCount, currentUserHasListings }) => {
   const notificationDot = notificationCount > 0 ? <div className={css.notificationDot} /> : null;
@@ -58,11 +54,14 @@ const InboxLink = ({ notificationCount, currentUserHasListings }) => {
 };
 
 const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
-  const currentPageClass = page => {
+  const currentPageClass = (page) => {
     const isAccountSettingsPage =
       page === 'AccountSettingsPage' && ACCOUNT_SETTINGS_PAGES.includes(currentPage);
     return currentPage === page || isAccountSettingsPage ? css.currentPage : null;
   };
+
+  // Extract the userType from currentUser attributes (assuming it's stored in publicData)
+  const userType = currentUser?.attributes?.profile?.publicData?.userType;
 
   return (
     <Menu>
@@ -70,15 +69,23 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
         <Avatar className={css.avatar} user={currentUser} disableProfileLink />
       </MenuLabel>
       <MenuContent className={css.profileMenuContent}>
-        <MenuItem key="ManageListingsPage">
-          <NamedLink
-            className={classNames(css.menuLink, currentPageClass('ManageListingsPage'))}
-            name="ManageListingsPage"
-          >
-            <span className={css.menuItemBorder} />
-            <FormattedMessage id="TopbarDesktop.yourListingsLink" />
-          </NamedLink>
-        </MenuItem>
+        {/* If userType is 'Student', render 'abc', otherwise render ManageListingsPage */}
+        {userType === 'Student' ? (
+          <MenuItem key="abc">
+            <span> </span>
+          </MenuItem>
+        ) : (
+          <MenuItem key="ManageListingsPage">
+            <NamedLink
+              className={classNames(css.menuLink, currentPageClass('ManageListingsPage'))}
+              name="ManageListingsPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.yourListingsLink" />
+            </NamedLink>
+          </MenuItem>
+        )}
+
         <MenuItem key="ProfileSettingsPage">
           <NamedLink
             className={classNames(css.menuLink, currentPageClass('ProfileSettingsPage'))}
@@ -88,6 +95,7 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
             <FormattedMessage id="TopbarDesktop.profileSettingsLink" />
           </NamedLink>
         </MenuItem>
+
         <MenuItem key="AccountSettingsPage">
           <NamedLink
             className={classNames(css.menuLink, currentPageClass('AccountSettingsPage'))}
@@ -97,6 +105,7 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
             <FormattedMessage id="TopbarDesktop.accountSettingsLink" />
           </NamedLink>
         </MenuItem>
+
         <MenuItem key="logout">
           <InlineTextButton rootClassName={css.logoutButton} onClick={onLogout}>
             <span className={css.menuItemBorder} />
@@ -108,7 +117,7 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
   );
 };
 
-const TopbarDesktop = props => {
+const TopbarDesktop = (props) => {
   const {
     className,
     config,
@@ -124,6 +133,7 @@ const TopbarDesktop = props => {
     onSearchSubmit,
     initialSearchFormValues,
   } = props;
+
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

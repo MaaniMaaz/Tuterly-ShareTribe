@@ -1,7 +1,3 @@
-/**
- *  TopbarMobileMenu prints the menu content for authenticated user or
- * shows login actions for those who are not authenticated.
- */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -34,10 +30,7 @@ const CustomLinkComponent = ({ linkConfig, currentPage }) => {
       : null;
   };
 
-  // Note: if the config contains 'route' keyword,
-  // then in-app linking config has been resolved already.
   if (type === 'internal' && route) {
-    // Internal link
     const { name, params, to } = route || {};
     const className = classNames(css.navigationLink, getCurrentPageClass(name));
     return (
@@ -67,6 +60,7 @@ const TopbarMobileMenu = props => {
   } = props;
 
   const user = ensureCurrentUser(currentUser);
+  const userType = currentUser?.attributes?.profile?.publicData?.userType; // Extract userType
 
   const extraLinks = customLinks.map(linkConfig => {
     return (
@@ -153,12 +147,19 @@ const TopbarMobileMenu = props => {
             <FormattedMessage id="TopbarMobileMenu.inboxLink" />
             {notificationCountBadge}
           </NamedLink>
-          <NamedLink
-            className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
-            name="ManageListingsPage"
-          >
-            <FormattedMessage id="TopbarMobileMenu.yourListingsLink" />
-          </NamedLink>
+
+          {/* If userType is 'Student', show 'abc' instead of the link */}
+          {userType === 'Student' ? (
+            <span> </span>
+          ) : (
+            <NamedLink
+              className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
+              name="ManageListingsPage"
+            >
+              <FormattedMessage id="TopbarMobileMenu.yourListingsLink" />
+            </NamedLink>
+          )}
+
           <NamedLink
             className={classNames(css.navigationLink, currentPageClass('ProfileSettingsPage'))}
             name="ProfileSettingsPage"

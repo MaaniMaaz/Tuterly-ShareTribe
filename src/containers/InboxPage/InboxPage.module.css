@@ -370,3 +370,10 @@
     color: var(--colorGrey300);
   }
 }
+
+
+
+h1 span{
+  font-size: 28px !important;
+  padding-right: 10px;
+}
