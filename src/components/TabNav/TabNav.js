@@ -35,13 +35,14 @@ Tab.propTypes = {
 };
 
 const TabNav = props => {
-  const { className, rootClassName, tabRootClassName, tabs } = props;
+  const { className, rootClassName, tabRootClassName, tabs, currentUser } = props;
   const classes = classNames(rootClassName || css.root, className);
   const tabClasses = tabRootClassName || css.tab;
   return (
     <nav className={classes}>
       {tabs.map((tab, index) => {
         const id = typeof tab.id === 'string' ? tab.id : `${index}`;
+        if(currentUser.attributes.profile.publicData.userType === "Student" && tab.id === "StripePayoutPageTab") return; 
         return <Tab key={id} id={id} className={tabClasses} {...tab} />;
       })}
     </nav>

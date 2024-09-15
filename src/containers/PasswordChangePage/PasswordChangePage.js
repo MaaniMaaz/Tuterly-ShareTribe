@@ -62,6 +62,7 @@ export const PasswordChangePageComponent = props => {
             <UserNav currentPage="PasswordChangePage" />
           </>
         }
+        currentUser={currentUser}
         sideNav={null}
         useAccountSettingsNav
         currentPage="PasswordChangePage"

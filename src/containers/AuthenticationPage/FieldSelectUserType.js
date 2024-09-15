@@ -8,6 +8,7 @@ import { propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 
 import { FieldSelect } from '../../components';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom';
 
 import css from './AuthenticationPage.module.css';
 
@@ -32,6 +33,10 @@ const FieldSelectUserType = props => {
   const hasMultipleUserTypes = userTypes?.length > 1;
   const classes = classNames(rootClassName || css.userTypeSelect, className);
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const userType = queryParams.get('userType') || '';
+
   return hasMultipleUserTypes && !hasExistingUserType ? (
     <>
       <FieldSelect
@@ -46,11 +51,21 @@ const FieldSelectUserType = props => {
         </option>
         {userTypes.map(config => {
           const type = config.userType;
-          return (
-            <option key={type} value={type}>
-              {config.label}
-            </option>
-          );
+          if (userType) {
+            if (userType === type) {
+              return (
+                <option key={type} value={type}>
+                  {config.label}
+                </option>
+              );
+            }
+          } else {
+            return (
+              <option key={type} value={type}>
+                {config.label}
+              </option>
+            );
+          }
         })}
       </FieldSelect>
     </>

@@ -99,6 +99,7 @@ export const ContactDetailsPageComponent = props => {
             <UserNav currentPage="ContactDetailsPage" />
           </>
         }
+        currentUser={currentUser}
         sideNav={null}
         useAccountSettingsNav
         currentPage="ContactDetailsPage"

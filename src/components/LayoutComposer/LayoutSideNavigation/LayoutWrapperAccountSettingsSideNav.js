@@ -122,7 +122,7 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
     },
   ];
 
-  return <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
+  return <TabNav rootClassName={css.tabs} currentUser={props.currentUser} tabRootClassName={css.tab} tabs={tabs} />;
 };
 
 LayoutWrapperAccountSettingsSideNavComponent.defaultProps = {

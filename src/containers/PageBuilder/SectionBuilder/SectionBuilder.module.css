@@ -117,8 +117,8 @@
   justify-self: start;
 
   @media (--viewportMedium) {
-    text-align: center;
-    justify-self: center;
+    text-align: left;
+    justify-self: start;
   }
 }
 

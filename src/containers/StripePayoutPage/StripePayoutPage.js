@@ -156,6 +156,7 @@ export const StripePayoutPageComponent = props => {
             <UserNav currentPage="StripePayoutPage" />
           </>
         }
+        currentUser={currentUser}
         sideNav={null}
         useAccountSettingsNav
         currentPage="StripePayoutPage"

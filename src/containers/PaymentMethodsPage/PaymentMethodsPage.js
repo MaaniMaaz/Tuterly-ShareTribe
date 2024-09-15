@@ -153,6 +153,7 @@ const PaymentMethodsPageComponent = props => {
           </>
         }
         sideNav={null}
+        currentUser={currentUser}
         useAccountSettingsNav
         currentPage="PaymentMethodsPage"
         footer={<FooterContainer />}
