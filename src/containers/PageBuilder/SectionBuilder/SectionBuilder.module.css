@@ -221,7 +221,7 @@
   display: flex !important;
   justify-content: flex-start !important; /* Ensure content starts at the left */
   align-items: flex-start !important; /* Align items to the top left */
-  text-align: cebter !important; /* Align text to the left */
+  text-align: center !important; /* Align text to the left */
 }
 
 .SectionBuilder_sectionDetails__Nrz-Z {
