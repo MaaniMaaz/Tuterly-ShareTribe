@@ -1,48 +1,40 @@
-import React from 'react';
-import { bool, string } from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import { Field } from 'react-final-form';
+import { useLocation } from 'react-router-dom/cjs/react-router-dom';
+import { bool, string } from 'prop-types';
 import classNames from 'classnames';
 
 import { intlShape } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
-
 import { FieldSelect } from '../../components';
-import { useLocation } from 'react-router-dom/cjs/react-router-dom';
 
 import css from './AuthenticationPage.module.css';
 
-// Hidden input field
-const FieldHidden = props => {
-  const { name, value } = props;
-  return (
-    <Field id={name} name={name} type="hidden" className={css.unitTypeHidden}>
-      {fieldRenderProps => <input {...fieldRenderProps?.input} value={value} />}
-    </Field>
-  );
-};
-
-/**
- * Return React Final Form Field that allows selecting user type.
- *
- * @param {*} props containing name, userTypes, hasExistingUserType, intl
- * @returns React Final Form Field component to select user type
- */
 const FieldSelectUserType = props => {
   const { rootClassName, className, name, userTypes, hasExistingUserType, intl } = props;
-  const hasMultipleUserTypes = userTypes?.length > 1;
   const classes = classNames(rootClassName || css.userTypeSelect, className);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const userType = queryParams.get('userType') || '';
+  const initialUserType = queryParams.get('userType') || '';
 
-  return !hasExistingUserType && userType ? (
-    <>
-      {/* Automatically select the userType and make it hidden */}
-      <FieldHidden name={name} value={userType} />
-    </>
-  ) : hasMultipleUserTypes && !hasExistingUserType ? (
+  // State to store the selected user type
+  const [selectedUserType, setSelectedUserType] = useState(initialUserType || '');
+
+  // Handle changes in the user type dropdown
+  const handleUserTypeChange = event => {
+    setSelectedUserType(event.target.value);
+  };
+
+  useEffect(() => {
+    // If there's a userType in the URL, set it automatically
+    if (initialUserType) {
+      setSelectedUserType(initialUserType);
+    }
+  }, [initialUserType]);
+
+  return (
     <>
       <FieldSelect
         id={name}
@@ -50,23 +42,70 @@ const FieldSelectUserType = props => {
         className={classes}
         label={intl.formatMessage({ id: 'FieldSelectUserType.label' })}
         validate={validators.required(intl.formatMessage({ id: 'FieldSelectUserType.required' }))}
+        onChange={handleUserTypeChange}
       >
         <option disabled value="">
           {intl.formatMessage({ id: 'FieldSelectUserType.placeholder' })}
         </option>
-        {userTypes.map(config => {
-          const type = config.userType;
-          return (
-            <option key={type} value={type}>
-              {config.label}
-            </option>
-          );
-        })}
+        {userTypes.map(config => (
+          <option key={config.userType} value={config.userType}>
+            {config.label}
+          </option>
+        ))}
       </FieldSelect>
-    </>
-  ) : (
-    <>
-      <FieldHidden name={name} value={userTypes[0]?.userType || ''} />
+
+      {/* Dynamically render different fields based on the selected user type */}
+      {selectedUserType === 'tutor' && (
+        <div>
+          <Field
+            name="email"
+            component="input"
+            type="email"
+            placeholder="Email"
+            className={css.field}
+            validate={validators.required(intl.formatMessage({ id: 'Field.email.required' }))}
+          />
+          <Field
+            name="firstName"
+            component="input"
+            type="text"
+            placeholder="First name"
+            className={css.field}
+            validate={validators.required(intl.formatMessage({ id: 'Field.firstName.required' }))}
+          />
+          <Field
+            name="lastName"
+            component="input"
+            type="text"
+            placeholder="Last name"
+            className={css.field}
+            validate={validators.required(intl.formatMessage({ id: 'Field.lastName.required' }))}
+          />
+          {/* Add other Tutor-specific fields */}
+        </div>
+      )}
+
+      {selectedUserType === 'student' && (
+        <div>
+          <Field
+            name="school"
+            component="input"
+            type="text"
+            placeholder="School Name"
+            className={css.field}
+            validate={validators.required(intl.formatMessage({ id: 'Field.school.required' }))}
+          />
+          <Field
+            name="gradeLevel"
+            component="input"
+            type="text"
+            placeholder="Grade Level"
+            className={css.field}
+            validate={validators.required(intl.formatMessage({ id: 'Field.gradeLevel.required' }))}
+          />
+          {/* Add other Student-specific fields */}
+        </div>
+      )}
     </>
   );
 };
