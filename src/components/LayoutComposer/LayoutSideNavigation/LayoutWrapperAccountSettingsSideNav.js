@@ -46,7 +46,7 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
   const { currentPage, userType } = props; // Extract userType from props
 
   const [scrollLeft, setScrollLeft] = useGlobalState('scrollLeft');
-console.log(userType),
+
   useEffect(() => {
     let scrollTimeout = null;
     const { viewport } = props;
@@ -105,7 +105,7 @@ console.log(userType),
     },
   ];
 
-  return <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
+  return <TabNav rootClassName={css.tabs} currentUser={props.currentUser} tabRootClassName={css.tab} tabs={tabs} />;
 };
 
 LayoutWrapperAccountSettingsSideNavComponent.defaultProps = {

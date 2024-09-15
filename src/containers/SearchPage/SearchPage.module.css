@@ -67,7 +67,7 @@
   }
   @media (--viewportLarge) {
     /* Layout */
-    padding: 40px 0 0 36px;
+    padding: 40px 0 0 14px;
 
     flex-direction: column;
     justify-content: flex-start;
@@ -77,7 +77,7 @@
   }
 
   @media (min-width: 1440px) {
-    padding: 40px 0 0 calc((100vw - 1368px) / 2);
+    padding: 40px 0 0 calc((90vw - 1368px) / 2);
   }
   @media (--viewportXLarge) {
     padding: 40px 0 0 calc((100vw - 1800px) / 2);

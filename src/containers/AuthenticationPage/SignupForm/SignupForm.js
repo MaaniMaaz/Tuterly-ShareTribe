@@ -12,7 +12,6 @@ import * as validators from '../../../util/validators';
 import { getPropsForCustomUserFieldInputs } from '../../../util/userHelpers';
 
 import { Form, PrimaryButton, FieldTextInput, CustomExtendedDataField } from '../../../components';
-
 import FieldSelectUserType from '../FieldSelectUserType';
 import UserFieldDisplayName from '../UserFieldDisplayName';
 import UserFieldPhoneNumber from '../UserFieldPhoneNumber';
@@ -21,17 +20,17 @@ import css from './SignupForm.module.css';
 
 const SignupFormComponent = props => {
   const location = useLocation(); // Get location from react-router-dom
-  const [userType, setUserType] = useState(''); // Use state to handle userType
+  const queryParams = new URLSearchParams(location.search); // Parse query params from URL
+  const initialUserType = queryParams.get('userType') || ''; // Get userType from URL, fallback to empty string
+
+  const [userType, setUserType] = useState(initialUserType); // Use state to handle userType
 
   useEffect(() => {
-    // Parse query parameters to get userType
-    const params = new URLSearchParams(location.search);
-    const userTypeFromUrl = params.get('userType'); // Get userType from URL query params
-
-    // Set userType based on query parameter or fallback to default
-    setUserType(userTypeFromUrl || props.preselectedUserType || '');
-
-  }, [location.search, props.preselectedUserType]);
+    // Update state if userType is present in URL query params
+    if (initialUserType) {
+      setUserType(initialUserType);
+    }
+  }, [initialUserType]);
 
   return (
     <FinalForm

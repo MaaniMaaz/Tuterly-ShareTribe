@@ -52,7 +52,8 @@ const BlockBuilder = props => {
             />
           );
         } else {
-          console.warn(`Unknown block type (${block.blockType}) detected inside (${sectionId}).`);
+
+
           return null;
         }
       })}

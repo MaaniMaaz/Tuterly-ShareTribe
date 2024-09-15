@@ -11,7 +11,11 @@ const Tab = props => {
   // Conditionally render the tab if:
   // - the tab has id="1" AND userType is "Student"
   // - OR the tab has id="StripePayoutPageTab" AND userType is "Student"
-  if ((id === '1' && userType === 'Student') || (id === 'StripePayoutPageTab' && userType === 'Student')) {
+  if ((id === '1' && userType === 'Student') ) {
+    return null;
+  }
+
+  if (id === 'StripePayoutPageTab' && userType === 'Student') {
     return null;
   }
 
