@@ -14,10 +14,10 @@ import css from './AuthenticationPage.module.css';
 
 // Hidden input field
 const FieldHidden = props => {
-  const { name } = props;
+  const { name, value } = props;
   return (
     <Field id={name} name={name} type="hidden" className={css.unitTypeHidden}>
-      {fieldRenderProps => <input {...fieldRenderProps?.input} />}
+      {fieldRenderProps => <input {...fieldRenderProps?.input} value={value} />}
     </Field>
   );
 };
@@ -37,7 +37,12 @@ const FieldSelectUserType = props => {
   const queryParams = new URLSearchParams(location.search);
   const userType = queryParams.get('userType') || '';
 
-  return hasMultipleUserTypes && !hasExistingUserType ? (
+  return !hasExistingUserType && userType ? (
+    <>
+      {/* Automatically select the userType and make it hidden */}
+      <FieldHidden name={name} value={userType} />
+    </>
+  ) : hasMultipleUserTypes && !hasExistingUserType ? (
     <>
       <FieldSelect
         id={name}
@@ -51,27 +56,17 @@ const FieldSelectUserType = props => {
         </option>
         {userTypes.map(config => {
           const type = config.userType;
-          if (userType) {
-            if (userType === type) {
-              return (
-                <option key={type} value={type}>
-                  {config.label}
-                </option>
-              );
-            }
-          } else {
-            return (
-              <option key={type} value={type}>
-                {config.label}
-              </option>
-            );
-          }
+          return (
+            <option key={type} value={type}>
+              {config.label}
+            </option>
+          );
         })}
       </FieldSelect>
     </>
   ) : (
     <>
-      <FieldHidden name={name} />
+      <FieldHidden name={name} value={userTypes[0]?.userType || ''} />
     </>
   );
 };
