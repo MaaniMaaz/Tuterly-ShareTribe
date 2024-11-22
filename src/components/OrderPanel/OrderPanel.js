@@ -155,7 +155,7 @@ const PriceMaybe = props => {
 };
 
 const OrderPanel = props => {
-  console.log('OrderPanel props:', props);
+  
   const {
     rootClassName,
     className,
