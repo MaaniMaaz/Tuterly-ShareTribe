@@ -141,8 +141,9 @@ export class TransactionPanelComponent extends Component {
       orderBreakdown,
       orderPanel,
       config,
+      transactionId,
     } = this.props;
-
+    console.log('TransactionPanel transactionId:', transactionId);
     const isCustomer = transactionRole === 'customer';
     const isProvider = transactionRole === 'provider';
 
@@ -294,6 +295,7 @@ export class TransactionPanelComponent extends Component {
                 onFocus={this.onSendMessageFormFocus}
                 onBlur={this.onSendMessageFormBlur}
                 onSubmit={this.onMessageSubmit}
+                transactionId={this.props.transactionId} // Pass the transactionId prop
               />
             ) : (
               <div className={css.sendingMessageNotAllowed}>

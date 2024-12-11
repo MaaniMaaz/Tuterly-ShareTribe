@@ -37,6 +37,7 @@ const TermsOfServicePage = loadable(() => import(/* webpackChunkName: "TermsOfSe
 const TransactionPage = loadable(() => import(/* webpackChunkName: "TransactionPage" */ '../containers/TransactionPage/TransactionPage'));
 const NoAccessPage = loadable(() => import(/* webpackChunkName: "NoAccessPage" */ '../containers/NoAccessPage/NoAccessPage'));
 const JoinMeetingPage = loadable(() => import(/* webpackChunkName: "JoinMeetingPage" */ '../containers/JoinMeetingPage/JoinMeetingPage'));
+
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ '../containers/StyleguidePage/StyleguidePage'));
 
@@ -86,6 +87,15 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       component: CMSPage,
       loadData: pageDataLoadingAPI.CMSPage.loadData,
     },
+
+    {
+      path: '/join-meeting/:transactionId',
+      name: 'JoinMeetingPage',
+      component: props => <JoinMeetingPage {...props} />,
+      auth: true,
+      authPage: 'LoginPage',
+    },
+
     {
       path: '/s',
       name: 'SearchPage',
@@ -232,15 +242,7 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       component: InboxPage,
       loadData: pageDataLoadingAPI.InboxPage.loadData,
     },
-    {
-      path: '/join-meeting',
-      name: 'JoinMeetingPage',
-      auth: true,
-      authPage: 'LoginPage',
-      component: JoinMeetingPage,
-      // If you need additional data loading for the page, you can add loadData here.
-      // loadData: pageDataLoadingAPI.JoinMeetingPage.loadData,
-    },
+
     {
       path: '/order/:id',
       name: 'OrderDetailsPage',

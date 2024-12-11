@@ -1,83 +1,95 @@
-/**
- * This file contains server side endpoints that can be used to perform backend
- * tasks that can not be handled in the browser.
- *
- * The endpoints should not clash with the application routes. Therefore, the
- * endpoints are prefixed in the main server where this file is used.
- */
-
+// apiRouter.js
 const express = require('express');
-const bodyParser = require('body-parser');
-const { deserialize } = require('./api-util/sdk');
-
-const initiateLoginAs = require('./api/initiate-login-as');
-const loginAs = require('./api/login-as');
-const transactionLineItems = require('./api/transaction-line-items');
-const initiatePrivileged = require('./api/initiate-privileged');
-const transitionPrivileged = require('./api/transition-privileged');
-
-const createUserWithIdp = require('./api/auth/createUserWithIdp');
-
-const { authenticateFacebook, authenticateFacebookCallback } = require('./api/auth/facebook');
-const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
-
 const router = express.Router();
+const zoomService = require('./api/zoomService');
 
-// ================ API router middleware: ================ //
+// In-memory store for meetings
+const meetingStore = new Map();
 
-// Parse Transit body first to a string
-router.use(
-  bodyParser.text({
-    type: 'application/transit+json',
-  })
-);
+// Zoom routes
+router.post('/zoom/create-meeting-for-transaction', async (req, res) => {
+  try {
+    const { transactionId } = req.body;
 
-// Deserialize Transit body string to JS data
-router.use((req, res, next) => {
-  if (req.get('Content-Type') === 'application/transit+json' && typeof req.body === 'string') {
-    try {
-      req.body = deserialize(req.body);
-    } catch (e) {
-      console.error('Failed to parse request body as Transit:');
-      console.error(e);
-      res.status(400).send('Invalid Transit in request body.');
-      return;
+    if (!transactionId) {
+      return res.status(400).json({
+        error: 'Transaction ID is required',
+        timestamp: new Date().toISOString()
+      });
     }
+
+    // Check existing meeting
+    let meeting = meetingStore.get(transactionId);
+    if (meeting) {
+      // Verify meeting still exists in Zoom
+      try {
+        await zoomService.getMeeting(meeting.meetingId);
+        return res.json(meeting);
+      } catch (error) {
+        // If meeting doesn't exist in Zoom anymore, remove it from store
+        meetingStore.delete(transactionId);
+      }
+    }
+
+    // Create new meeting
+    const topic = `Meeting for Transaction: ${transactionId}`;
+    const zoomMeeting = await zoomService.createMeeting(topic);
+
+    meeting = {
+      meetingId: zoomMeeting.id,
+      joinUrl: zoomMeeting.join_url,
+      startUrl: zoomMeeting.start_url,
+      topic: zoomMeeting.topic,
+      transactionId,
+      createdAt: new Date().toISOString()
+    };
+
+    meetingStore.set(transactionId, meeting);
+    console.log('Meeting created successfully:', meeting.meetingId);
+    return res.json(meeting);
+
+  } catch (error) {
+    console.error('Create meeting error:', error);
+    return res.status(500).json({
+      error: 'Failed to create meeting',
+      details: error.response?.data || error.message,
+      timestamp: new Date().toISOString()
+    });
   }
-  next();
 });
 
-// ================ API router endpoints: ================ //
+router.get('/zoom/meetings/:transactionId', async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const meeting = meetingStore.get(transactionId);
 
-router.get('/initiate-login-as', initiateLoginAs);
-router.get('/login-as', loginAs);
-router.post('/transaction-line-items', transactionLineItems);
-router.post('/initiate-privileged', initiatePrivileged);
-router.post('/transition-privileged', transitionPrivileged);
+    if (!meeting) {
+      return res.status(404).json({
+        error: 'Meeting not found',
+        timestamp: new Date().toISOString()
+      });
+    }
 
-// Create user with identity provider (e.g. Facebook or Google)
-// This endpoint is called to create a new user after user has confirmed
-// they want to continue with the data fetched from IdP (e.g. name and email)
-router.post('/auth/create-user-with-idp', createUserWithIdp);
-
-// Facebook authentication endpoints
-
-// This endpoint is called when user wants to initiate authenticaiton with Facebook
-router.get('/auth/facebook', authenticateFacebook);
-
-// This is the route for callback URL the user is redirected after authenticating
-// with Facebook. In this route a Passport.js custom callback is used for calling
-// loginWithIdp endpoint in Sharetribe Auth API to authenticate user to the marketplace
-router.get('/auth/facebook/callback', authenticateFacebookCallback);
-
-// Google authentication endpoints
-
-// This endpoint is called when user wants to initiate authenticaiton with Google
-router.get('/auth/google', authenticateGoogle);
-
-// This is the route for callback URL the user is redirected after authenticating
-// with Google. In this route a Passport.js custom callback is used for calling
-// loginWithIdp endpoint in Sharetribe Auth API to authenticate user to the marketplace
-router.get('/auth/google/callback', authenticateGoogleCallback);
+    // Verify meeting still exists in Zoom
+    try {
+      await zoomService.getMeeting(meeting.meetingId);
+      return res.json(meeting);
+    } catch (error) {
+      // If meeting doesn't exist in Zoom anymore, remove it from store
+      meetingStore.delete(transactionId);
+      return res.status(404).json({
+        error: 'Meeting no longer exists',
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('Get meeting error:', error);
+    return res.status(500).json({
+      error: 'Failed to retrieve meeting',
+      details: error.response?.data || error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
 
 module.exports = router;

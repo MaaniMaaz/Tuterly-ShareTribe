@@ -513,7 +513,7 @@
   "NoAccessPage.postListings.content": "You need to receive publishing rights from the {marketplaceName} team.",
   "NoAccessPage.userPendingApproval.schemaTitle": "No user approval",
   "NoAccessPage.userPendingApproval.heading": "Your account is waiting for approval",
-  "NoAccessPage.userPendingApproval.content": "You need approval from the {marketplaceName} team to get access to the marketplace.",  
+  "NoAccessPage.userPendingApproval.content": "You need approval from the {marketplaceName} team to get access to the marketplace.",
   "OrderBreakdown.baseUnitDay": "{unitPrice} x {quantity, number} {quantity, plural, one {day} other {days}}",
   "OrderBreakdown.baseUnitNight": "{unitPrice} x {quantity, number} {quantity, plural, one {night} other {nights}}",
   "OrderBreakdown.baseUnitHour": "{unitPrice} x {quantity, number} {quantity, plural, one {hour} other {hours}}",
@@ -1126,5 +1126,13 @@
   "UserDisplayName.deleted": "Deleted user",
   "UserNav.accountSettings": "Account settings",
   "UserNav.profileSettings": "Profile settings",
-  "UserNav.yourListings": "Your listings"
+  "UserNav.yourListings": "Your listings",
+    "SendMessageForm.joinMeeting": "Join Meeting",
+    "TransactionPanel.meetingAvailable": "Video meeting is available",
+    "JoinMeetingPage.title": "Transaction Meeting",
+    "JoinMeetingPage.loadingMeeting": "Loading meeting...",
+    "JoinMeetingPage.meetingError": "Failed to join meeting",
+    "JoinMeetingPage.meetingNotFound": "Meeting not found",
+"JoinMeetingPage.loading": "Please wait...",
+"JoinMeetingPage.error" : "Tuterly Team is updating the website for you!"
 }

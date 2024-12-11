@@ -1,58 +1,63 @@
+/* src/containers/TransactionPage/SendMessageForm/SendMessageForm.module.css */
 @import '../../../styles/customMediaQueries.css';
 
 .root {
   position: relative;
-  box-shadow: var(--boxShadowBottomForm);
-
-  @media (--viewportLarge) {
-    box-shadow: none;
-
-    /* Clearfix */
-    width: 100%;
-    overflow: hidden;
-  }
-}
-
-.spinner {
-  stroke: var(--colorWhite);
-  width: 18px;
-  height: 18px;
-  stroke-width: 4px;
-}
-
-.fillSuccess {
-  fill: var(--colorSuccess);
-}
-
-.strokeMatter {
-  stroke: var(--colorGrey700);
+  width: 100%;
 }
 
 .submitContainer {
   display: flex;
-  flex-direction: row;
-}
-
-.errorContainer {
-  display: block;
-  flex: 1;
-  text-align: right;
-  padding: 26px 24px 0 0;
+  flex-direction: column;
+  margin-top: 16px;
 }
 
 .error {
-  composes: h5 from global;
-
-  font-weight: var(--fontWeightMedium);
   color: var(--colorFail);
-  margin: 0;
+  margin: 0 0 12px 0;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
 }
 
 .submitButton {
-  float: right;
-  min-width: 150px;
+  margin-left: auto;
+  min-width: 120px;
+}
+
+.joinMeetingButton {
+  padding: 8px 16px;
+  background-color: var(--marketplaceColor);
+  border: 1px solid var(--marketplaceColor);
+  border-radius: 4px;
+  color: white;
+  font-weight: var(--fontWeightMedium);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--marketplaceColorDark);
+    border-color: var(--marketplaceColorDark);
+  }
+}
+
+.textarea {
+  flex-grow: 1;
+  height: auto;
+  min-height: 100px;
+  margin: 0;
+  padding: 12px;
+  border-radius: 4px;
 }
 
 .sendIcon {
   margin: -3px 5px 0 0;
+}
+
+.strokeMatter {
+  stroke: var(--colorGrey700);
 }

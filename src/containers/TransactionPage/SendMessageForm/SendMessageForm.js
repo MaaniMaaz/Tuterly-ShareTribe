@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { Form as FinalForm } from 'react-final-form';
 import classNames from 'classnames';
+import { withRouter } from 'react-router-dom';
 
 import { FormattedMessage, injectIntl, intlShape } from '../../../util/reactIntl';
 import { Form, FieldTextInput, SecondaryButtonInline } from '../../../components';
-import { withRouter } from 'react-router-dom';
 
 import css from './SendMessageForm.module.css';
 
 const BLUR_TIMEOUT_MS = 100;
 
+// Define the IconSendMessage component
 const IconSendMessage = () => (
   <svg
     className={css.sendIcon}
@@ -28,32 +29,44 @@ const IconSendMessage = () => (
   </svg>
 );
 
+// This component is responsible for rendering the send message form in the TransactionPanel
 class SendMessageFormComponent extends Component {
   constructor(props) {
     super(props);
+    console.log('SendMessageForm transactionId:', props.transactionId.uuid); // Logging the correct transaction ID
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.handleJoinMeeting = this.handleJoinMeeting.bind(this);
     this.blurTimeoutId = null;
   }
 
+  componentWillUnmount() {
+    // Clear the blur timeout when the component is about to be unmounted
+    window.clearTimeout(this.blurTimeoutId);
+  }
+
   handleFocus() {
+    // Call the onFocus prop function when the user focuses on the message input
     this.props.onFocus();
+    // Clear the blur timeout, as the user is now focused on the input
     window.clearTimeout(this.blurTimeoutId);
   }
 
   handleBlur() {
+    // Set a timeout to call the onBlur prop function after a short delay
     this.blurTimeoutId = window.setTimeout(() => {
       this.props.onBlur();
     }, BLUR_TIMEOUT_MS);
   }
 
-  handleJoinMeeting = () => {
-    this.props.history.push('/join-meeting');
-  };
-
-  componentWillUnmount() {
-    if (this.blurTimeoutId) {
-      window.clearTimeout(this.blurTimeoutId);
+  handleJoinMeeting() {
+    const { transactionId, history } = this.props;
+    console.log('SendMessageForm transactionId:', transactionId);
+    // Redirect to the join-meeting page with the correct transactionId.uuid
+    if (transactionId && transactionId.uuid) {
+      history.push(`/join-meeting/${transactionId.uuid}`);
+    } else {
+      console.error('Invalid transactionId:', transactionId);
     }
   }
 
@@ -74,11 +87,14 @@ class SendMessageFormComponent extends Component {
             formId,
           } = formRenderProps;
 
+          // Construct the final className for the root element
           const classes = classNames(rootClassName || css.root, className);
+          // Determine if the submit button should be disabled
           const submitDisabled = invalid || inProgress;
 
           return (
             <Form className={classes} onSubmit={values => handleSubmit(values, form)}>
+              {/* Render the message input field */}
               <FieldTextInput
                 inputRootClass={css.textarea}
                 type="textarea"
@@ -89,19 +105,22 @@ class SendMessageFormComponent extends Component {
                 onBlur={this.handleBlur}
               />
               <div className={css.submitContainer}>
+                {/* Display an error message if there was an issue sending the message */}
                 {sendMessageError && (
                   <p className={css.error}>
                     <FormattedMessage id="SendMessageForm.sendFailed" />
                   </p>
                 )}
                 <div className={css.buttonGroup}>
+                  {/* Render the "Join Meeting" button */}
                   <button
                     type="button"
                     className={css.joinMeetingButton}
                     onClick={this.handleJoinMeeting}
                   >
-                    <FormattedMessage id="SendMessageForm.joinMeeting" defaultMessage="Join Meeting" />
+                    <FormattedMessage id="SendMessageForm.joinMeeting" />
                   </button>
+                  {/* Render the "Send Message" button */}
                   <SecondaryButtonInline
                     className={css.submitButton}
                     inProgress={inProgress}
@@ -143,8 +162,12 @@ SendMessageFormComponent.propTypes = {
   sendMessageError: PropTypes.string,
   intl: intlShape.isRequired,
   history: PropTypes.object.isRequired,
+  transactionId: PropTypes.shape({
+    uuid: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
+// Wrap the SendMessageFormComponent with the necessary higher-order components
 const SendMessageForm = compose(
   injectIntl,
   withRouter
