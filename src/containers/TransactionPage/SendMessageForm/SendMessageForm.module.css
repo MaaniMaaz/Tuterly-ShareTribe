@@ -61,3 +61,49 @@
 .strokeMatter {
   stroke: var(--colorGrey700);
 }
+
+
+
+.translationControls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+  padding: 0 4px;
+}
+
+.languageSelect {
+  padding: 0px 8px;
+  border: 1px solid #e7e7e7;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 120px;
+  height: 48px;
+  background-color: white;
+  margin-top: 0px !important;
+}
+
+.translateButton {
+  padding: 6px 12px;
+  font-size: 14px;
+  height: 48px;
+  white-space: nowrap;
+}
+
+.translateButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+
+.textarea {
+  margin-top: 18px !important;
+}
+
+.error {
+  color: var(--colorFail);
+  margin: 0 0 12px 0;
+}
+
+

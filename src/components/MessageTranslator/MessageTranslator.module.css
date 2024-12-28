@@ -1,0 +1,51 @@
+.messageWrapper {
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.originalMessage {
+  font-size: 16px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.translationControls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.languageSelect {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 120px;
+}
+
+.translateButton {
+  min-width: 100px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.translateButton:disabled {
+  background-color: #ccc;
+}
+
+.translatedMessage {
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.translationLabel {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #666;
+}

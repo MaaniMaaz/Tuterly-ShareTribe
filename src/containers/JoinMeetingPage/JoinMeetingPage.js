@@ -12,10 +12,10 @@ import css from './JoinMeetingPage.module.css';
 const JoinMeetingPage = ({ currentUser, scrollingDisabled }) => {
   const { transactionId } = useParams();
   const [error, setError] = useState(null);
-  const [meetingUrl, setMeetingUrl] = useState(null);
+  const [meetingData, setMeetingData] = useState(null);
+  const [showMeeting, setShowMeeting] = useState(false);
 
-  const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL || http://localhost:${process.env.REACT_APP_DEV_API_SERVER_PORT || 3500};
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3500';
 
   const fetchOrCreateMeeting = async () => {
     if (!transactionId) {
@@ -24,8 +24,8 @@ const JoinMeetingPage = ({ currentUser, scrollingDisabled }) => {
     }
 
     try {
-      const meetingEndpoint = ${API_BASE_URL}/api/zoom/meetings/${transactionId};
-      const createMeetingEndpoint = ${API_BASE_URL}/api/zoom/create-meeting-for-transaction;
+      const meetingEndpoint = `${API_BASE_URL}/api/zoom/meetings/${transactionId}`;
+      const createMeetingEndpoint = `${API_BASE_URL}/api/zoom/create-meeting-for-transaction`;
 
       const response = await fetch(meetingEndpoint);
 
@@ -35,20 +35,20 @@ const JoinMeetingPage = ({ currentUser, scrollingDisabled }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             transactionId,
-            topic: Meeting for Transaction ${transactionId},
+            topic: `Meeting for Transaction ${transactionId}`,
           }),
         });
 
         if (!createResponse.ok) {
           const errorText = await createResponse.text();
-          throw new Error(Failed to create meeting: ${errorText});
+          throw new Error(`Failed to create meeting: ${errorText}`);
         }
 
         const meeting = await createResponse.json();
-        setMeetingUrl(meeting.joinUrl);
+        setMeetingData(meeting);
       } else if (response.ok) {
         const meeting = await response.json();
-        setMeetingUrl(meeting.joinUrl);
+        setMeetingData(meeting);
       } else {
         throw new Error('Failed to fetch meeting details.');
       }
@@ -62,6 +62,11 @@ const JoinMeetingPage = ({ currentUser, scrollingDisabled }) => {
     fetchOrCreateMeeting();
   }, [transactionId]);
 
+  const handleJoinMeeting = (e) => {
+    e.preventDefault();
+    setShowMeeting(true);
+  };
+
   return (
     <Page className={classNames(css.root)} title="Join Meeting" scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn topbar={<TopbarContainer />}>
@@ -69,14 +74,26 @@ const JoinMeetingPage = ({ currentUser, scrollingDisabled }) => {
           <div className={css.error}>
             <p>Error: {error}</p>
           </div>
-        ) : meetingUrl ? (
+        ) : meetingData ? (
           <div className={css.success}>
             <p>
               Meeting Created!{' '}
-              <a href={meetingUrl} target="_blank" rel="noopener noreferrer">
+              <button onClick={handleJoinMeeting} className={css.joinButton}>
                 Join Meeting
-              </a>
+              </button>
             </p>
+            {showMeeting && (
+              <div className={css.meetingContainer}>
+                <div className={css.meetingWrapper}>
+                  <iframe
+                    src={meetingData.join_url || meetingData.joinUrl}
+                    allow="microphone; camera; fullscreen"
+                    className={css.meetingFrame}
+                    title="Zoom Meeting"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className={css.loading}>

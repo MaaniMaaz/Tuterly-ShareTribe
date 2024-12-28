@@ -29,31 +29,42 @@ const IconSendMessage = () => (
   </svg>
 );
 
-// This component is responsible for rendering the send message form in the TransactionPanel
+// Translation languages available
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'es', name: 'Spanish' },
+  { code: 'fr', name: 'French' },
+  { code: 'de', name: 'German' },
+  { code: 'ru', name: 'Russian' },
+  { code: 'zh', name: 'Chinese' },
+  { code: 'ar', name: 'Arabic' },
+];
+
 class SendMessageFormComponent extends Component {
   constructor(props) {
     super(props);
-    console.log('SendMessageForm transactionId:', props.transactionId.uuid); // Logging the correct transaction ID
+    this.state = {
+      isTranslating: false,
+      selectedLanguage: 'en',
+    };
+
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleJoinMeeting = this.handleJoinMeeting.bind(this);
+    this.handleTranslate = this.handleTranslate.bind(this);
     this.blurTimeoutId = null;
   }
 
   componentWillUnmount() {
-    // Clear the blur timeout when the component is about to be unmounted
     window.clearTimeout(this.blurTimeoutId);
   }
 
   handleFocus() {
-    // Call the onFocus prop function when the user focuses on the message input
     this.props.onFocus();
-    // Clear the blur timeout, as the user is now focused on the input
     window.clearTimeout(this.blurTimeoutId);
   }
 
   handleBlur() {
-    // Set a timeout to call the onBlur prop function after a short delay
     this.blurTimeoutId = window.setTimeout(() => {
       this.props.onBlur();
     }, BLUR_TIMEOUT_MS);
@@ -61,8 +72,6 @@ class SendMessageFormComponent extends Component {
 
   handleJoinMeeting() {
     const { transactionId, history } = this.props;
-    console.log('SendMessageForm transactionId:', transactionId);
-    // Redirect to the join-meeting page with the correct transactionId.uuid
     if (transactionId && transactionId.uuid) {
       history.push(`/join-meeting/${transactionId.uuid}`);
     } else {
@@ -70,6 +79,38 @@ class SendMessageFormComponent extends Component {
     }
   }
 
+  async handleTranslate(form) {
+    const currentText = form.getFieldState('message')?.value;
+    if (!currentText) return;
+
+    this.setState({ isTranslating: true });
+    try {
+      // Use the correct port from your environment variables
+      const response = await fetch(`http://localhost:3500/api/translate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: currentText,
+          targetLanguage: this.state.selectedLanguage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Translation request failed');
+      }
+
+      const data = await response.json();
+      console.log('Translation response:', data); // Add logging
+      form.change('message', data.translation);
+    } catch (error) {
+      console.error('Translation failed:', error);
+      this.setState({ translationError: 'Translation failed. Please try again.' });
+    } finally {
+      this.setState({ isTranslating: false });
+    }
+  }
   render() {
     return (
       <FinalForm
@@ -87,14 +128,12 @@ class SendMessageFormComponent extends Component {
             formId,
           } = formRenderProps;
 
-          // Construct the final className for the root element
           const classes = classNames(rootClassName || css.root, className);
-          // Determine if the submit button should be disabled
           const submitDisabled = invalid || inProgress;
+          const { isTranslating, selectedLanguage } = this.state;
 
           return (
             <Form className={classes} onSubmit={values => handleSubmit(values, form)}>
-              {/* Render the message input field */}
               <FieldTextInput
                 inputRootClass={css.textarea}
                 type="textarea"
@@ -104,15 +143,42 @@ class SendMessageFormComponent extends Component {
                 onFocus={this.handleFocus}
                 onBlur={this.handleBlur}
               />
+
+              <div className={css.translationControls}>
+                <select
+                  className={css.languageSelect}
+                  value={selectedLanguage}
+                  onChange={(e) => this.setState({ selectedLanguage: e.target.value })}
+                  disabled={isTranslating}
+                >
+                  {languages.map(lang => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.name}
+                    </option>
+                  ))}
+                </select>
+
+                <SecondaryButtonInline
+                  className={css.translateButton}
+                  disabled={isTranslating}
+                  onClick={() => this.handleTranslate(form)}
+                  type="button"
+                >
+                  {isTranslating ? (
+                    <FormattedMessage id="SendMessageForm.translating" />
+                  ) : (
+                    <FormattedMessage id="SendMessageForm.translate" />
+                  )}
+                </SecondaryButtonInline>
+              </div>
+
               <div className={css.submitContainer}>
-                {/* Display an error message if there was an issue sending the message */}
                 {sendMessageError && (
                   <p className={css.error}>
                     <FormattedMessage id="SendMessageForm.sendFailed" />
                   </p>
                 )}
                 <div className={css.buttonGroup}>
-                  {/* Render the "Join Meeting" button */}
                   <button
                     type="button"
                     className={css.joinMeetingButton}
@@ -120,7 +186,6 @@ class SendMessageFormComponent extends Component {
                   >
                     <FormattedMessage id="SendMessageForm.joinMeeting" />
                   </button>
-                  {/* Render the "Send Message" button */}
                   <SecondaryButtonInline
                     className={css.submitButton}
                     inProgress={inProgress}
@@ -167,7 +232,6 @@ SendMessageFormComponent.propTypes = {
   }).isRequired,
 };
 
-// Wrap the SendMessageFormComponent with the necessary higher-order components
 const SendMessageForm = compose(
   injectIntl,
   withRouter

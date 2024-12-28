@@ -1134,5 +1134,11 @@
     "JoinMeetingPage.meetingError": "Failed to join meeting",
     "JoinMeetingPage.meetingNotFound": "Meeting not found",
 "JoinMeetingPage.loading": "Please wait...",
-"JoinMeetingPage.error" : "Tuterly Team is updating the website for you!"
+"JoinMeetingPage.error" : "Tuterly Team is updating the website for you!",
+  "SendMessageForm.translate": "Translate",
+  "SendMessageForm.translating": "Translating...",
+  "SendMessageForm.sendMessage": "Send message",
+  "SendMessageForm.sendMessageFailed": "Message failed to send"
+
+
 }

@@ -2,9 +2,15 @@
 const express = require('express');
 const router = express.Router();
 const zoomService = require('./api/zoomService');
+const translateRouter = require('./api/translate');
 
 // In-memory store for meetings
 const meetingStore = new Map();
+
+
+
+// Mount the translate router
+router.use('/translate', translateRouter);
 
 // Zoom routes
 router.post('/zoom/create-meeting-for-transaction', async (req, res) => {
@@ -57,6 +63,11 @@ router.post('/zoom/create-meeting-for-transaction', async (req, res) => {
     });
   }
 });
+
+
+
+
+
 
 router.get('/zoom/meetings/:transactionId', async (req, res) => {
   try {

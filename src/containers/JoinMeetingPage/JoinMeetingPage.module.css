@@ -2,40 +2,58 @@
 
 .root {
   min-height: 100vh;
-  padding-top: var(--topbarHeight);
-}
 
-.scrollingDisabled {
-  height: 100vh;
-  overflow: hidden;
 }
-
 .error {
-  color: var(--colorFail);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - var(--topbarHeight));
-  padding: 24px;
-  text-align: center;
+  color: #e53935;
+  padding: 20px;
+}
+
+.success {
+  padding: 20px;
 }
 
 .loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - var(--topbarHeight));
-  padding: 24px;
+  padding: 20px;
 }
 
-:global(#zmmtg-root) {
-  position: fixed;
+.joinButton {
+  background-color: #ff9029;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 8px;
+  text-decoration: none;
+}
+
+.joinButton:hover {
+  background-color: #ff9029;
+}
+
+.meetingContainer {
+  margin-top: 20px;
+  width: 100%;
+  background: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.meetingWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.meetingFrame {
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1000;
-  background-color: var(--colorWhite);
+  width: 100%;
+  height: 100%;
+  border: none;
+  min-height: 600px;
 }
